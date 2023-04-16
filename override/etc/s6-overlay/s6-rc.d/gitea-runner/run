@@ -1,0 +1,56 @@
+#!/command/with-contenv /bin/bash
+
+export HOME=/mnt/config/home
+cd /mnt/config/home
+
+# Create Config File
+
+if [[ ! -e /mnt/config/etc/gitea-runner.yaml ]]; then
+  if [[ ! -d /mnt/config/etc ]]; then
+    /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc
+  fi
+  /command/s6-setuidgid guardian /usr/bin/act_runner generate-config >/mnt/config/etc/gitea-runner.yaml
+fi
+
+# Register Runner
+
+export GITEA_RUNNER_NAME=${GITEA_RUNNER_NAME:-"$(hostname)"}
+
+if [[ ! -d /mnt/config/log/gitea-runner ]]; then
+  /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log/gitea-runner
+fi
+
+REQSETTINGS="${GITEA_INSTANCE_URL};${GITEA_RUNNER_REGISTRATION_TOKEN};${GITEA_RUNNER_NAME};${GITEA_RUNNER_LABELS}"
+/command/s6-setuidgid guardian sh -c "/bin/echo \"${REQSETTINGS}\" >/mnt/config/log/gitea-runner/requested"
+
+if [[ -e /mnt/config/log/gitea-runner/configured ]]; then
+  CURSETTINGS=`/usr/bin/head -1 /mnt/config/log/gitea-runner/configured`
+  if [[ "x$SSLDOMAINS" != "x$CURDOMAINS" ]]; then
+    rm -f /mnt/config/log/gitea-runner/configured
+  fi  
+fi
+
+if [[ ! -e /mnt/config/log/gitea-runner/configured ]]; then
+  if [[ ! -z "${GITEA_INSTANCE_URL}" && ! -z "${GITEA_RUNNER_REGISTRATION_TOKEN}" ]]; then
+    /command/s6-setuidgid guardian /usr/bin/act_runner register --instance "${GITEA_INSTANCE_URL}" --token "${GITEA_RUNNER_REGISTRATION_TOKEN}" --name "${GITEA_RUNNER_NAME}" --labels "${GITEA_RUNNER_LABELS}" --config "/mnt/config/etc/gitea-runner.yaml" --no-interactive >/mnt/config/log/register.log 2>&1
+
+    cat /mnt/config/log/register.log
+
+    if grep -q "registered successfully" /mnt/config/log/register.log; then
+      /command/s6-setuidgid guardian sh -c "/bin/echo \"${REQSETTINGS}\" >/mnt/config/log/gitea-runner/configured"
+    fi
+  fi
+fi
+
+# Start Runner
+
+if [[ -f /mnt/config/log/gitea-runner/configured ]]; then
+  exec /command/s6-setuidgid guardian /usr/bin/act_runner daemon --config "/mnt/config/etc/gitea-runner.yaml"
+else
+  echo "** runner is not registered **"
+  if [[ -e /mnt/config/log/register.log ]]; then
+    cat /mnt/config/log/register.log
+  fi
+  sleep 300
+  exit 0
+fi
