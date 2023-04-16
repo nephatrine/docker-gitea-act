@@ -11,9 +11,9 @@ steps:
 - name: build
   environment:
     PDR_USER:
-      from_secret: docker-user-pdr
+      from_secret: docker-user-local
     PDR_PASS:
-      from_secret: docker-pass-pdr
+      from_secret: docker-pass-local
   commands:
   - docker build -t pdr.nephatrine.net/nephatrine/gitea-act:cached --target builder .
   - docker build -t pdr.nephatrine.net/nephatrine/gitea-act:latest .
@@ -46,13 +46,13 @@ steps:
   image: appleboy/drone-discord
   failure: ignore
   settings:
-    avatar_url: https://nephatrine.net/images/buttons/gitea-web.png
-    message: "Build of **[{{repo.name}}:{{commit.branch}}](<https://code.nephatrine.net/nephatrine/{{repo.name}}/src/branch/{{commit.branch}}>)** returned [{{build.status}}](<{{build.link}}>)."
+    avatar_url: https://code.nephatrine.net/assets/img/logo.png
+    message: "build of **[{{repo.name}}:{{commit.branch}}](<https://code.nephatrine.net/NephNET/{{repo.name}}/src/branch/{{commit.branch}}>)** returned [{{build.status}}](<{{build.link}}>)."
     username: DroneCI
     webhook_id:
-      from_secret: wh-infra-id
+      from_secret: infra-notify-id
     webhook_token:
-      from_secret: wh-infra-tok
+      from_secret: infra-notify-token
 
 depends_on:
 - default
@@ -64,6 +64,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 9b56a50a0fbcb00a424590e95d611fd78ca20a6d1a9c430da766d9c7db4d4387
+hmac: b52479ba183cd222b470c6d88c54f2325c937afe587a4006e0642c0c01eac153
 
 ...
