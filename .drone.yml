@@ -15,10 +15,10 @@ steps:
     PDR_PASS:
       from_secret: docker-pass-local
   commands:
-  - docker build -t pdr.nephatrine.net/nephatrine/gitea-act:cached --target builder .
-  - docker build -t pdr.nephatrine.net/nephatrine/gitea-act:latest .
+  - docker build -t pdr.nephatrine.net/nephatrine/gitea-runner:cached --target builder .
+  - docker build -t pdr.nephatrine.net/nephatrine/gitea-runner:latest .
   - docker login -p "$PDR_PASS" -u "$PDR_USER" pdr.nephatrine.net
-  - docker push pdr.nephatrine.net/nephatrine/gitea-act:latest
+  - docker push pdr.nephatrine.net/nephatrine/gitea-runner:latest
   - docker logout pdr.nephatrine.net
 - name: publish
   environment:
@@ -27,12 +27,12 @@ steps:
     DOCKER_PASS:
       from_secret: docker-pass
   commands:
-  - docker tag pdr.nephatrine.net/nephatrine/gitea-act:latest nephatrine/gitea-act:latest
-  - docker tag pdr.nephatrine.net/nephatrine/gitea-act:latest nephatrine/gitea-act:0.1.2
-  - docker tag pdr.nephatrine.net/nephatrine/gitea-act:latest nephatrine/gitea-act:0.1
-  - docker tag pdr.nephatrine.net/nephatrine/gitea-act:latest nephatrine/gitea-act:0
+  - docker tag pdr.nephatrine.net/nephatrine/gitea-runner:latest nephatrine/gitea-runner:latest
+  - docker tag pdr.nephatrine.net/nephatrine/gitea-runner:latest nephatrine/gitea-runner:0.1.2
+  - docker tag pdr.nephatrine.net/nephatrine/gitea-runner:latest nephatrine/gitea-runner:0.1
+  - docker tag pdr.nephatrine.net/nephatrine/gitea-runner:latest nephatrine/gitea-runner:0
   - docker login -p "$DOCKER_PASS" -u "$DOCKER_USER"
-  - docker push -a nephatrine/gitea-act
+  - docker push -a nephatrine/gitea-runner
   - docker logout
   depends_on:
   - build
@@ -64,6 +64,6 @@ trigger:
 
 ---
 kind: signature
-hmac: b52479ba183cd222b470c6d88c54f2325c937afe587a4006e0642c0c01eac153
+hmac: 8d21c50d6456bfea7b9605894f3dc4f6128b48eef92c705a93a3ddab8aca064f
 
 ...
