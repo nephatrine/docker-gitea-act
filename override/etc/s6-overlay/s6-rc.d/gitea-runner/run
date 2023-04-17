@@ -25,7 +25,7 @@ REQSETTINGS="${GITEA_INSTANCE_URL};${GITEA_RUNNER_REGISTRATION_TOKEN};${GITEA_RU
 
 if [[ -e /mnt/config/log/gitea-runner/configured ]]; then
   CURSETTINGS=`/usr/bin/head -1 /mnt/config/log/gitea-runner/configured`
-  if [[ "x$SSLDOMAINS" != "x$CURDOMAINS" ]]; then
+  if [[ "x$REQSETTINGS" != "x$CURSETTINGS" ]]; then
     rm -f /mnt/config/log/gitea-runner/configured
   fi  
 fi
