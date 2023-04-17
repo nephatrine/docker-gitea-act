@@ -45,7 +45,7 @@ fi
 # Start Runner
 
 if [[ -f /mnt/config/log/gitea-runner/configured ]]; then
-  exec /command/s6-setuidgid guardian /usr/bin/act_runner daemon --config "/mnt/config/etc/gitea-runner.yaml"
+  exec /usr/bin/act_runner daemon --config "/mnt/config/etc/gitea-runner.yaml"
 else
   echo "** runner is not registered **"
   if [[ -e /mnt/config/log/register.log ]]; then
