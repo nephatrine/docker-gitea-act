@@ -1,0 +1,58 @@
+name: Build Container Image
+run-name: ${{ gitea.actor }} pushed to ${{ gitea.repository }}:${{ gitea.ref_name }}
+on: [push, workflow_call]
+jobs:
+  build:
+    if: gitea.repository_owner == 'NephNET'
+    runs-on: nephnet
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Docker Build
+        run: |
+          docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-cached --target builder ${{ gitea.workspace }}
+          docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }} ${{ gitea.workspace }}
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          title: "Docker Build"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+  package:
+    if: gitea.repository_owner == 'NephNET'
+    needs: [build]
+    runs-on: nephnet
+    steps:
+      - name: Docker Login (Gitea)
+        uses: https://github.com/docker/login-action@v2
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Docker Push (Gitea)
+        run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}
+  publish:
+    if: gitea.repository_owner == 'NephNET' && gitea.ref_name == 'master'
+    needs: [build]
+    runs-on: nephnet
+    steps:
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Docker Tag
+        run: |
+          docker tag code.nephatrine.net/nephnet/gitea-runner:master nephatrine/gitea-runner:latest
+          docker tag code.nephatrine.net/nephnet/gitea-runner:master nephatrine/gitea-runner:0.1.2
+          docker tag code.nephatrine.net/nephnet/gitea-runner:master nephatrine/gitea-runner:0.1
+          docker tag code.nephatrine.net/nephnet/gitea-runner:master nephatrine/gitea-runner:0
+      - name: Docker Push
+        run: docker push -a nephatrine/gitea-runner
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        with:
+          nodetail: true
+          title: "DockerHub Updated"
+          description: "get `nephatrine/gitea-runner:latest` [here](https://hub.docker.com/repository/docker/nephatrine/gitea-runner/general)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
