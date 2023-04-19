@@ -13,7 +13,7 @@ jobs:
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-cached --target builder ${{ gitea.workspace }}
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }} ${{ gitea.workspace }}
       - name: Notify Discord
-        uses: https://github.com/sarisia/actions-status-discord@v1
+        uses: actions/discord-status@v1
         if: always()
         with:
           title: "Container Build"
@@ -24,7 +24,7 @@ jobs:
     runs-on: nephnet
     steps:
       - name: Docker Login (Gitea)
-        uses: https://github.com/docker/login-action@v2
+        uses: actions/docker-login@v2
         with:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
@@ -37,7 +37,7 @@ jobs:
     runs-on: nephnet
     steps:
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: actions/docker-login@v2
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
@@ -50,7 +50,7 @@ jobs:
       - name: Docker Push
         run: docker push -a nephatrine/gitea-runner
       - name: Notify Discord
-        uses: https://github.com/sarisia/actions-status-discord@v1
+        uses: actions/discord-status@v1
         with:
           title: "DockerHub: gitea-runner"
           description: "The container image was pushed to [DockerHub](https://hub.docker.com/repository/docker/nephatrine/gitea-runner/general). Pull `nephatrine/gitea-runner:latest` for the newest image."
