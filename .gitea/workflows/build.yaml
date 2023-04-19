@@ -16,7 +16,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: always()
         with:
-          title: "Docker Build"
+          title: "Container Build"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   package:
     if: gitea.repository_owner == 'NephNET'
@@ -52,7 +52,7 @@ jobs:
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         with:
+          title: "DockerHub: gitea-runner"
+          description: "The container image was pushed to [DockerHub](https://hub.docker.com/repository/docker/nephatrine/gitea-runner/general). Pull `nephatrine/gitea-runner:latest` for the newest image."
           nodetail: true
-          title: "DockerHub Updated"
-          description: "get `nephatrine/gitea-runner:latest` [here](https://hub.docker.com/repository/docker/nephatrine/gitea-runner/general)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
