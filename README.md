@@ -6,9 +6,9 @@
 
 This docker image contains a Gitea actions runner.
 
-- [Alpine Linux](https://alpinelinux.org/)
-- [Skarnet Software](https://skarnet.org/software/)
-- [S6 Overlay](https://github.com/just-containers/s6-overlay)
+**Please note that the runner itself runs as the root user inside the container.**
+
+- [Alpine Linux](https://alpinelinux.org/) w/ [S6 Overlay](https://github.com/just-containers/s6-overlay)
 - [Gitea-Runner](https://gitea.com/gitea/act_runner)
 
 You can spin up a quick temporary test container like this:
@@ -44,7 +44,7 @@ logs, and application state (e.g. databases) so they are not lost on image
 update.
 
 - ``/mnt/config``: Persistent Data.
-- ``/run/docker.sock`: Docker Daemon Socket.
+- ``/run/docker.sock``: Docker Daemon Socket.
 
 Do not share ``/mnt/config`` volumes between multiple containers as they may
 interfere with the operation of one another.
