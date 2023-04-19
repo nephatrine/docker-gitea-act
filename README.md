@@ -2,8 +2,6 @@
 [Docker](https://hub.docker.com/r/nephatrine/gitea-runner/) |
 [unRAID](https://code.nephatrine.net/nephatrine/unraid-containers)
 
-[![Build Status](https://ci.nephatrine.net/api/badges/NephNET/docker-gitea-act/status.svg?ref=refs/heads/master)](https://ci.nephatrine.net/NephNET/docker-gitea-act)
-
 # Gitea CI/CD Runner
 
 This docker image contains a Gitea actions runner.
