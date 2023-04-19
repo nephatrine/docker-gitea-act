@@ -9,7 +9,7 @@ if [[ ! -f /mnt/config/etc/gitea-runner.yaml ]]; then
   if [[ ! -d /mnt/config/etc ]]; then
     /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc
   fi
-  /command/s6-setuidgid guardian /usr/bin/act_runner generate-config >/mnt/config/etc/gitea-runner.yaml
+  /usr/bin/act_runner generate-config | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/etc/gitea-runner.yaml
 fi
 
 # Register Runner
@@ -32,7 +32,7 @@ fi
 
 if [[ ! -f /mnt/config/log/gitea-runner/configured ]]; then
   if [[ ! -z "${GITEA_INSTANCE_URL}" && ! -z "${GITEA_RUNNER_REGISTRATION_TOKEN}" ]]; then
-    /command/s6-setuidgid guardian /usr/bin/act_runner register --instance "${GITEA_INSTANCE_URL}" --token "${GITEA_RUNNER_REGISTRATION_TOKEN}" --name "${GITEA_RUNNER_NAME}" --labels "${GITEA_RUNNER_LABELS}" --config "/mnt/config/etc/gitea-runner.yaml" --no-interactive >/mnt/config/log/register.log 2>&1
+    /command/s6-setuidgid guardian /usr/bin/act_runner register --instance "${GITEA_INSTANCE_URL}" --token "${GITEA_RUNNER_REGISTRATION_TOKEN}" --name "${GITEA_RUNNER_NAME}" --labels "${GITEA_RUNNER_LABELS}" --config "/mnt/config/etc/gitea-runner.yaml" --no-interactive 2>&1 | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/log/register.log
 
     cat /mnt/config/log/register.log
 
