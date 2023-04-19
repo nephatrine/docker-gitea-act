@@ -10,7 +10,7 @@ FROM nephatrine/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
- && apk add --no-cache docker git git-lfs npm
+ && apk add --no-cache curl docker git git-lfs jq npm
 
 COPY --from=builder /root/act_runner/act_runner /usr/bin/
 COPY override /
