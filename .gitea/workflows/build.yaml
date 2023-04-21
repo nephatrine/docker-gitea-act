@@ -2,7 +2,7 @@ name: Build Container Image
 run-name: ${{ gitea.actor }} pushed to ${{ gitea.repository }}:${{ gitea.ref_name }}
 on: [push, workflow_call]
 jobs:
-  build:
+  buildamd64:
     if: gitea.repository_owner == 'NephNET'
     runs-on: nephnet
     steps:
@@ -11,16 +11,32 @@ jobs:
       - name: Docker Build
         run: |
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-cached --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }} ${{ gitea.workspace }}
+          docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-amd64 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: actions/discord-status@v1
         if: always()
         with:
-          title: "Container Build"
+          title: "Container Build (X86_64)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
-  package:
+  buildarm64:
     if: gitea.repository_owner == 'NephNET'
-    needs: [build]
+    runs-on: rpi4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Docker Build
+        run: |
+          docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-cached --target builder ${{ gitea.workspace }}
+          docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-arm64v8 ${{ gitea.workspace }}
+      - name: Notify Discord
+        uses: actions/discord-status@v1
+        if: always()
+        with:
+          title: "Container Build (AARCH64)"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
+  packageamd64:
+    if: gitea.repository_owner == 'NephNET'
+    needs: [buildamd64]
     runs-on: nephnet
     steps:
       - name: Docker Login (Gitea)
@@ -30,10 +46,67 @@ jobs:
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Push (Gitea)
-        run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}
-  publish:
+        run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-amd64
+  packagearm64:
+    if: gitea.repository_owner == 'NephNET'
+    needs: [buildarm64]
+    runs-on: rpi4
+    steps:
+      - name: Docker Login (Gitea)
+        uses: actions/docker-login@v2
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
+      - name: Docker Push (Gitea)
+        run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-arm64v8
+  publishamd64:
     if: gitea.repository_owner == 'NephNET' && gitea.ref_name == 'master'
-    needs: [build]
+    needs: [buildamd64]
+    runs-on: nephnet
+    steps:
+      - name: Check Base Image
+        if: github.event_name != 'push'
+        uses: actions/docker-base-image-check@v1.2.1
+        id: checkbase
+        with:
+          base-image: nephatrine/alpine-s6:latest
+          image: nephatrine/gitea-runner:latest
+          platforms: linux/amd64
+      - name: Docker Login
+        uses: actions/docker-login@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Docker Push
+        run: |
+          docker tag code.nephatrine.net/nephnet/gitea-runner:master-amd64 nephatrine/gitea-runner:latest-amd64
+          docker push nephatrine/gitea-runner:latest-amd64
+  publisharm64:
+    if: gitea.repository_owner == 'NephNET' && gitea.ref_name == 'master'
+    needs: [buildarm64]
+    runs-on: rpi4
+    steps:
+      - name: Check Base Image
+        if: github.event_name != 'push'
+        uses: actions/docker-base-image-check@v1.2.1
+        id: checkbase
+        with:
+          base-image: nephatrine/alpine-s6:latest
+          image: nephatrine/gitea-runner:latest
+          platforms: linux/arm64
+      - name: Docker Login
+        uses: actions/docker-login@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Docker Push
+        run: |
+          docker tag code.nephatrine.net/nephnet/gitea-runner:master-arm64v8 nephatrine/gitea-runner:latest-arm64v8
+          docker push nephatrine/gitea-runner:latest-arm64v8
+  manifest:
+    if: gitea.repository_owner == 'NephNET' && gitea.ref_name == 'master'
+    needs: [publishamd64, publisharm64]
     runs-on: nephnet
     steps:
       - name: Docker Login
@@ -41,15 +114,18 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Tag
+      - name: Docker Manifest
         run: |
-          docker tag code.nephatrine.net/nephnet/gitea-runner:master nephatrine/gitea-runner:latest
-          docker tag code.nephatrine.net/nephnet/gitea-runner:master nephatrine/gitea-runner:0.1.2
-          docker tag code.nephatrine.net/nephnet/gitea-runner:master nephatrine/gitea-runner:0.1
-          docker tag code.nephatrine.net/nephnet/gitea-runner:master nephatrine/gitea-runner:0
-      - name: Docker Push
-        run: docker push -a nephatrine/gitea-runner
+          docker manifest create nephatrine/gitea-runner:latest --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
+          docker manifest create nephatrine/gitea-runner:0.1.2 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
+          docker manifest create nephatrine/gitea-runner:0.1 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
+          docker manifest create nephatrine/gitea-runner:0 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
+          docker manifest push --purge nephatrine/gitea-runner:latest
+          docker manifest push --purge nephatrine/gitea-runner:0.1.2
+          docker manifest push --purge nephatrine/gitea-runner:0.1
+          docker manifest push --purge nephatrine/gitea-runner:0
       - name: Notify Discord
+        if: github.event_name == 'push' || steps.checkbase.outputs.needs-updating == 'true'
         uses: actions/discord-status@v1
         with:
           title: "DockerHub: gitea-runner"
