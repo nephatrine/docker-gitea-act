@@ -116,14 +116,14 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
         run: |
-          docker manifest create nephatrine/gitea-runner:latest --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
           docker manifest create nephatrine/gitea-runner:0.1.2 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
           docker manifest create nephatrine/gitea-runner:0.1 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
           docker manifest create nephatrine/gitea-runner:0 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
-          docker manifest push --purge nephatrine/gitea-runner:latest
+          docker manifest create nephatrine/gitea-runner:latest --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
           docker manifest push --purge nephatrine/gitea-runner:0.1.2
           docker manifest push --purge nephatrine/gitea-runner:0.1
           docker manifest push --purge nephatrine/gitea-runner:0
+          docker manifest push --purge nephatrine/gitea-runner:latest
       - name: Notify Discord
         if: github.event_name == 'push' || steps.checkbase.outputs.needs-updating == 'true'
         uses: actions/discord-status@v1
