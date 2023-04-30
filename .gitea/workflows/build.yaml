@@ -42,8 +42,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Docker Build
         run: |
-          docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-cached -f Dockerfile.riscv64 --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-riscv64 -f Dockerfile.riscv64 ${{ gitea.workspace }}
+          docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-cached --target builder ${{ gitea.workspace }}
+          docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-riscv64 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: actions/discord-status@v1
         if: always()
@@ -51,7 +51,7 @@ jobs:
           title: "Container Build (RISCV64)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   packageamd64:
-    if: gitea.repository_owner == 'NephNET'
+    if: gitea.repository_owner == 'NephNET' && gitea.ref_name == 'master'
     needs: [buildamd64]
     runs-on: nephnet
     steps:
@@ -64,7 +64,7 @@ jobs:
       - name: Docker Push
         run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-amd64
   packagearm64:
-    if: gitea.repository_owner == 'NephNET'
+    if: gitea.repository_owner == 'NephNET' && gitea.ref_name == 'master'
     needs: [buildarm64]
     runs-on: rpi4
     steps:
@@ -77,7 +77,7 @@ jobs:
       - name: Docker Push
         run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-arm64v8
   packageriscv64:
-    if: gitea.repository_owner == 'NephNET'
+    if: gitea.repository_owner == 'NephNET' && gitea.ref_name == 'master'
     needs: [buildriscv64]
     runs-on: vf2
     steps:
@@ -90,7 +90,7 @@ jobs:
       - name: Docker Push
         run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-riscv64
   manifestpkg:
-    if: gitea.repository_owner == 'NephNET'
+    if: gitea.repository_owner == 'NephNET' && gitea.ref_name == 'master'
     needs: [packageamd64, packagearm64, packageriscv64]
     runs-on: nephnet
     steps:
@@ -173,11 +173,11 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
         run: |
-          docker manifest create nephatrine/gitea-runner:0.1.2 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
-          docker manifest create nephatrine/gitea-runner:0.1 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
-          docker manifest create nephatrine/gitea-runner:0 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8
+          docker manifest create nephatrine/gitea-runner:0.1.5 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8 --amend nephatrine/gitea-runner:latest-riscv64
+          docker manifest create nephatrine/gitea-runner:0.1 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8 --amend nephatrine/gitea-runner:latest-riscv64
+          docker manifest create nephatrine/gitea-runner:0 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8 --amend nephatrine/gitea-runner:latest-riscv64
           docker manifest create nephatrine/gitea-runner:latest --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8 --amend nephatrine/gitea-runner:latest-riscv64
-          docker manifest push --purge nephatrine/gitea-runner:0.1.2
+          docker manifest push --purge nephatrine/gitea-runner:0.1.5
           docker manifest push --purge nephatrine/gitea-runner:0.1
           docker manifest push --purge nephatrine/gitea-runner:0
           docker manifest push --purge nephatrine/gitea-runner:latest
