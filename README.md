@@ -19,7 +19,7 @@ docker run --rm -v /var/run/docker.sock:/run/docker.sock -it nephatrine/gitea-ru
 
 ## Docker Tags
 
-- **nephatrine/gitea-runner:latest**: Gitea-Runner v0.1.2 / Alpine Latest
+- **nephatrine/gitea-runner:latest**: Gitea-Runner v0.1.5 / Alpine Latest
 
 ## Configuration Variables
 
