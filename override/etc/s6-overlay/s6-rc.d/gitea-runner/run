@@ -46,6 +46,8 @@ fi
 
 if [[ -f /mnt/config/log/gitea-runner/configured ]]; then
   exec /usr/bin/act_runner daemon --config "/mnt/config/etc/gitea-runner.yaml"
+elif [[ -z "${GITEA_RUNNER_REGISTRATION_TOKEN}" && -e /mnt/config/home/.runner ]]; then
+  exec /usr/bin/act_runner daemon --config "/mnt/config/etc/gitea-runner.yaml"
 else
   echo "** runner is not registered **"
   if [[ -f /mnt/config/log/register.log ]]; then
