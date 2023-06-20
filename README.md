@@ -2,60 +2,45 @@
 [Docker](https://hub.docker.com/r/nephatrine/gitea-runner/) |
 [unRAID](https://code.nephatrine.net/NephNET/unraid-containers)
 
-# Gitea CI/CD Runner
+# Gitea Actions Runner
 
-This docker image contains a Gitea actions runner.
+This docker image contains a Gitea actions runner for hosting your own CI/CD
+build environments.
+
+The `latest` tag points to version `0.2.0` and this is the only image actively
+being updated. There are tags for older versions, but these may no longer be
+using the latest Alpine version and packages.
 
 **Please note that the runner itself runs as the root user inside the container.**
 
-- [Alpine Linux](https://alpinelinux.org/) w/ [S6 Overlay](https://github.com/just-containers/s6-overlay)
-- [Gitea-Runner](https://gitea.com/gitea/act_runner)
+## Docker-Compose
 
-You can spin up a quick temporary test container like this:
+This is an example docker-compose file:
 
-~~~
-docker run --rm -v /var/run/docker.sock:/run/docker.sock -it nephatrine/gitea-runner:latest /bin/bash
-~~~
+```yaml
+services:
+  act_runner:
+    image: nephatrine/gitea-runner:latest
+    container_name: act_runner
+    environment:
+      TZ: America/New_York
+      PUID: 1000
+      PGID: 1000
+      GITEA_INSTANCE_URL: http://gitea.example.net:3000/
+      GITEA_RUNNER_REGISTRATION_TOKEN: PUT_TOKEN_HERE
+      GITEA_RUNNER_NAME: testrunner
+      GITEA_RUNNER_LABELS: alpine:docker://nephatrine/nxbuilder:alpine,debian:docker://nephatrine/nxbuilder:debian
+    volumes:
+      - /mnt/containers/act_runner:/mnt/config
+      - /var/run/docker.sock:/run/docker.sock
+```
 
-## Docker Tags
+## Server Configuration
 
-- **nephatrine/gitea-runner:latest**: Gitea-Runner v0.2.0 / Alpine Latest
+This is the only configuration file you will likely need to be aware of and
+potentially customize.
 
-## Configuration Variables
+- `/mnt/config/etc/gitea-runner.yaml`
 
-You can set these parameters using the syntax ``-e "VARNAME=VALUE"`` on your
-``docker run`` command. Some of these may only be used during initial
-configuration and further changes may need to be made in the generated
-configuration files.
-
-- ``GITEA_INSTANCE_URL``: Gitea Instance URL (**""**)
-- ``GITEA_RUNNER_REGISTRATION_TOKEN``: Gitea Runner Token (*""*)
-- ``GITEA_RUNNER_NAME``: Gitea Runner Name (*""*)
-- ``GITEA_RUNNER_LABELS``: Gitea Runner Labels (*""*)
-- ``PUID``: Mount Owner UID (*1000*)
-- ``PGID``: Mount Owner GID (*100*)
-- ``TZ``: System Timezone (*America/New_York*)
-
-## Persistent Mounts
-
-You can provide a persistent mountpoint using the ``-v /host/path:/container/path``
-syntax. These mountpoints are intended to house important configuration files,
-logs, and application state (e.g. databases) so they are not lost on image
-update.
-
-- ``/mnt/config``: Persistent Data.
-- ``/run/docker.sock``: Docker Daemon Socket.
-
-Do not share ``/mnt/config`` volumes between multiple containers as they may
-interfere with the operation of one another.
-
-You can perform some basic configuration of the container using the files and
-directories listed below.
-
-- ``/mnt/config/etc/crontabs/<user>``: User Crontabs. [*]
-- ``/mnt/config/etc/gitea-runner.yaml``: Set Runner Settings. [*]
-- ``/mnt/config/etc/logrotate.conf``: Logrotate Global Configuration.
-- ``/mnt/config/etc/logrotate.d/``: Logrotate Additional Configuration.
-
-**[*] Changes to some configuration files may require service restart to take
-immediate effect.**
+Modifications to this file will require a service restart to pull in the
+changes made.

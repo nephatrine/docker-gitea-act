@@ -6,10 +6,10 @@ services:
       TZ: America/New_York
       PUID: 1000
       PGID: 1000
-      GITEA_INSTANCE_URL: http://localhost:3000/
-      GITEA_RUNNER_REGISTRATION_TOKEN: 
-      GITEA_RUNNER_NAME: test
-      GITEA_RUNNER_LABELS: test
+      GITEA_INSTANCE_URL: http://example.net:3000/
+      GITEA_RUNNER_REGISTRATION_TOKEN:
+      GITEA_RUNNER_NAME: testrunner
+      GITEA_RUNNER_LABELS: alpine:docker://nephatrine/nxbuilder:alpine,debian:docker://nephatrine/nxbuilder:debian
     volumes:
       - /mnt/containers/act_runner:/mnt/config
       - /var/run/docker.sock:/run/docker.sock
