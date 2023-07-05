@@ -194,11 +194,11 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
         run: |
-          docker manifest create nephatrine/gitea-runner:0.2.2 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8 --amend nephatrine/gitea-runner:latest-armv7 --amend nephatrine/gitea-runner:latest-riscv64
+          docker manifest create nephatrine/gitea-runner:0.2.3 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8 --amend nephatrine/gitea-runner:latest-armv7 --amend nephatrine/gitea-runner:latest-riscv64
           docker manifest create nephatrine/gitea-runner:0.2 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8 --amend nephatrine/gitea-runner:latest-armv7 --amend nephatrine/gitea-runner:latest-riscv64
           docker manifest create nephatrine/gitea-runner:0 --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8 --amend nephatrine/gitea-runner:latest-armv7 --amend nephatrine/gitea-runner:latest-riscv64
           docker manifest create nephatrine/gitea-runner:latest --amend nephatrine/gitea-runner:latest-amd64 --amend nephatrine/gitea-runner:latest-arm64v8 --amend nephatrine/gitea-runner:latest-armv7 --amend nephatrine/gitea-runner:latest-riscv64
-          docker manifest push --purge nephatrine/gitea-runner:0.2.2
+          docker manifest push --purge nephatrine/gitea-runner:0.2.3
           docker manifest push --purge nephatrine/gitea-runner:0.2
           docker manifest push --purge nephatrine/gitea-runner:0
           docker manifest push --purge nephatrine/gitea-runner:latest
