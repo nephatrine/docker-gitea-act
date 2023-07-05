@@ -1,6 +1,8 @@
 #!/command/with-contenv /bin/bash
 
 export HOME=/mnt/config/home
+export DOCKER_HOST=unix:///var/run/docker.sock
+
 cd /mnt/config/home
 
 # Create Config File
@@ -10,7 +12,9 @@ if [[ ! -f /mnt/config/etc/gitea-runner.yaml ]]; then
     /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc
   fi
   /usr/bin/act_runner generate-config | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/etc/gitea-runner.yaml
+  /command/s6-setuidgid guardian /usr/bin/sed -i 's~docker_host: "-"~docker_host: "unix:///var/run/docker.sock"~g' /mnt/config/etc/gitea-runner.yaml
 fi
+/usr/bin/act_runner generate-config | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/etc/gitea-runner.yaml.default
 
 # Register Runner
 
