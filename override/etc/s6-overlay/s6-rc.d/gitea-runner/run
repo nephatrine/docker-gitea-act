@@ -5,7 +5,7 @@ export DOCKER_HOST=${DOCKER_HOST:-"unix:///var/run/docker.sock"}
 export GITEA_RUNNER_NAME=${GITEA_RUNNER_NAME:-"$(hostname)"}
 export REQSETTINGS="${GITEA_INSTANCE_URL};${GITEA_RUNNER_REGISTRATION_TOKEN};${GITEA_RUNNER_NAME};${GITEA_RUNNER_LABELS}"
 
-cd /mnt/config/home
+cd /mnt/config/home || exit 1
 
 # Create Config File
 
@@ -16,7 +16,6 @@ if [[ -d /mnt/config/etc ]]; then
   /usr/bin/act_runner generate-config | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/etc/gitea-runner.yaml.default
 fi
 if [[ ! -f /mnt/config/etc/gitea-runner.yaml && -f /mnt/config/etc/gitea-runner.yaml.default ]]; then
-  /usr/bin/act_runner generate-config | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/etc/gitea-runner.yaml
   /command/s6-setuidgid guardian /bin/cp /mnt/config/etc/gitea-runner.yaml.default /mnt/config/etc/gitea-runner.yaml
 fi
 
@@ -30,14 +29,14 @@ if [[ -d /mnt/config/log/gitea-runner ]]; then
 fi
 
 if [[ -f /mnt/config/log/gitea-runner/configured ]]; then
-  CURSETTINGS=`/usr/bin/head -1 /mnt/config/log/gitea-runner/configured`
+  CURSETTINGS=$(/usr/bin/head -1 /mnt/config/log/gitea-runner/configured)
   if [[ "x$REQSETTINGS" != "x$CURSETTINGS" ]]; then
     /bin/rm -f /mnt/config/log/gitea-runner/configured
   fi  
 fi
 
 if [[ ! -f /mnt/config/log/gitea-runner/configured ]]; then
-  if [[ ! -z "${GITEA_INSTANCE_URL}" && ! -z "${GITEA_RUNNER_REGISTRATION_TOKEN}" ]]; then
+  if [[ -n "${GITEA_INSTANCE_URL}" && -n "${GITEA_RUNNER_REGISTRATION_TOKEN}" ]]; then
     /command/s6-setuidgid guardian /usr/bin/act_runner register --instance "${GITEA_INSTANCE_URL}" --token "${GITEA_RUNNER_REGISTRATION_TOKEN}" --name "${GITEA_RUNNER_NAME}" --labels "${GITEA_RUNNER_LABELS}" --config "/mnt/config/etc/gitea-runner.yaml" --no-interactive 2>&1 | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/log/register.log
     if /bin/grep -qi "registered successfully" /mnt/config/log/register.log; then
       /command/s6-setuidgid guardian sh -c "/bin/echo \"${REQSETTINGS}\" >/mnt/config/log/gitea-runner/configured"
@@ -52,10 +51,10 @@ if [[ -f /mnt/config/log/gitea-runner/configured ]]; then
 elif [[ -z "${GITEA_RUNNER_REGISTRATION_TOKEN}" && -e /mnt/config/home/.runner ]]; then
   exec /usr/bin/act_runner daemon --config "/mnt/config/etc/gitea-runner.yaml"
 else
-  echo "** runner is not registered **"
+  /bin/echo "** runner is not registered **"
   if [[ -f /mnt/config/log/register.log ]]; then
     /bin/cat /mnt/config/log/register.log
   fi
-  sleep 300
+  /bin/sleep 300
   exit 0
 fi
