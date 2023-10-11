@@ -13,7 +13,7 @@ jobs:
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-cached --target builder ${{ gitea.workspace }}
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-amd64 ${{ gitea.workspace }}
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: https://github.com/docker/login-action@v3
         with:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
@@ -21,7 +21,7 @@ jobs:
       - name: Docker Push
         run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-amd64
       - name: Notify Discord
-        uses: https://github.com/sarisia/actions-status-discord@v1.12
+        uses: https://github.com/sarisia/actions-status-discord@v1
         if: always()
         with:
           title: "Container Build (X86_64)"
@@ -37,7 +37,7 @@ jobs:
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-cached --target builder ${{ gitea.workspace }}
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-arm64v8 ${{ gitea.workspace }}
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: https://github.com/docker/login-action@v3
         with:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
@@ -45,7 +45,7 @@ jobs:
       - name: Docker Push
         run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-arm64v8
       - name: Notify Discord
-        uses: https://github.com/sarisia/actions-status-discord@v1.12
+        uses: https://github.com/sarisia/actions-status-discord@v1
         if: always()
         with:
           title: "Container Build (AARCH64)"
@@ -61,7 +61,7 @@ jobs:
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-cached --target builder ${{ gitea.workspace }}
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-armv7 ${{ gitea.workspace }}
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: https://github.com/docker/login-action@v3
         with:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
@@ -69,7 +69,7 @@ jobs:
       - name: Docker Push
         run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-armv7
       - name: Notify Discord
-        uses: https://github.com/sarisia/actions-status-discord@v1.12
+        uses: https://github.com/sarisia/actions-status-discord@v1
         if: always()
         with:
           title: "Container Build (ARMV7L)"
@@ -85,7 +85,7 @@ jobs:
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-cached --target builder ${{ gitea.workspace }}
           docker build --pull -t code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-riscv64 ${{ gitea.workspace }}
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: https://github.com/docker/login-action@v3
         with:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
@@ -93,7 +93,7 @@ jobs:
       - name: Docker Push
         run: docker push code.nephatrine.net/nephnet/gitea-runner:${{ gitea.ref_name }}-riscv64
       - name: Notify Discord
-        uses: https://github.com/sarisia/actions-status-discord@v1.12
+        uses: https://github.com/sarisia/actions-status-discord@v1
         if: always()
         with:
           title: "Container Build (RISCV64)"
@@ -103,7 +103,7 @@ jobs:
     runs-on: nephnet
     steps:
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: https://github.com/docker/login-action@v3
         with:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
@@ -125,7 +125,7 @@ jobs:
           base-image: nephatrine/alpine-s6:latest-amd64
           image: nephatrine/gitea-runner:latest-amd64
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: https://github.com/docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
@@ -135,7 +135,7 @@ jobs:
           docker push nephatrine/gitea-runner:latest-amd64
       - name: Notify Discord
         if: github.event_name == 'push' || steps.checkbase.outputs.needs-updating == 'true'
-        uses: https://github.com/sarisia/actions-status-discord@v1.12
+        uses: https://github.com/sarisia/actions-status-discord@v1
         with:
           title: "DockerHub: gitea-runner"
           description: "The container image was pushed to [DockerHub](https://hub.docker.com/repository/docker/nephatrine/gitea-runner/general).\nPull `nephatrine/gitea-runner:latest-amd64` for the newest image."
@@ -147,7 +147,7 @@ jobs:
     runs-on: nephnet-arm64
     steps:
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: https://github.com/docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
@@ -161,7 +161,7 @@ jobs:
     runs-on: nephnet-armhf
     steps:
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: https://github.com/docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
@@ -175,7 +175,7 @@ jobs:
     runs-on: nephnet-riscv64
     steps:
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: https://github.com/docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
@@ -188,7 +188,7 @@ jobs:
     runs-on: nephnet
     steps:
       - name: Docker Login
-        uses: https://github.com/docker/login-action@v2
+        uses: https://github.com/docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
