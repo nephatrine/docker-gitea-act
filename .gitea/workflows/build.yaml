@@ -205,7 +205,7 @@ jobs:
       - name: Checkout Repository
         uses: https://gitea.com/actions/checkout@v3
       - name: Docker Describe
-        uses: actions/dockerhub-update-description@v3
+        uses: https://github.com/peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
