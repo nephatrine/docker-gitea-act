@@ -189,16 +189,15 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile.edge
-          tags: code.nephatrine.net/nephnet/gitea-runner:edge-riscv64
-          cache-from: type=registry,ref=code.nephatrine.net/nephnet/gitea-runner-cache:edge-riscv64
-          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/gitea-runner-cache:edge-riscv64,mode=max
+          tags: code.nephatrine.net/nephnet/gitea-runner:latest-riscv64
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/gitea-runner-cache:latest-riscv64
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/gitea-runner-cache:latest-riscv64,mode=max
       - name: Build & Push (Branch)
         if: gitea.ref_name != 'master' && gitea.ref_name != ''
         run: |
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-unknown}
-          docker buildx build --pull -t code.nephatrine.net/nephnet/gitea-runner:${BRANCH}-edge-riscv64 --platform linux/riscv64 -f Dockerfile.edge ${{ gitea.workspace }}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/gitea-runner:${BRANCH}-latest-riscv64 --platform linux/riscv64 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
