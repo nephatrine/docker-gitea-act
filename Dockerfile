@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2023 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2023 - 2024 Daniel Wolf <nephatrine@gmail.com>
 #
 # SPDX-License-Identifier: ISC
 
-FROM nephatrine/nxbuilder:golang AS builder
+FROM code.nephatrine.net/nephnet/nxb-golang:internal AS builder
 
 ARG ACT_RUNNER_VERSION=v0.2.6
 RUN git -C /root clone -b "$ACT_RUNNER_VERSION" --single-branch --depth=1 https://gitea.com/gitea/act_runner.git
@@ -12,7 +12,7 @@ RUN echo "====== COMPILE ACT_RUNNER ======" \
  && cd /root/act_runner \
  && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) build
 
-FROM nephatrine/alpine-s6:latest
+FROM code.nephatrine.net/nephnet/alpine-s6:internal
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
