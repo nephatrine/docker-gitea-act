@@ -202,7 +202,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (RISCV64; EDGE)"
+          title: "Container Build (RISCV64)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   build_manifest:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
