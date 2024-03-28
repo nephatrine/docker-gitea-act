@@ -4,7 +4,7 @@
 
 FROM code.nephatrine.net/nephnet/nxb-alpine:latest-golang AS builder
 
-ARG ACT_RUNNER_VERSION=v0.2.6
+ARG ACT_RUNNER_VERSION=v0.2.8
 RUN git -C /root clone -b "$ACT_RUNNER_VERSION" --single-branch --depth=1 https://gitea.com/gitea/act_runner.git
 
 ARG TAGS="sqlite sqlite_unlock_notify cgo"

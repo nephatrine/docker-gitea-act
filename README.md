@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2023 Daniel Wolf <nephatrine@gmail.com>
+SPDX-FileCopyrightText: 2023 - 2024 Daniel Wolf <nephatrine@gmail.com>
 
 SPDX-License-Identifier: ISC
 -->
@@ -13,7 +13,7 @@ SPDX-License-Identifier: ISC
 This docker image contains a Gitea actions runner for hosting your own CI/CD
 build environments.
 
-The `latest` tag points to version `0.2.6` and this is the only image actively
+The `latest` tag points to version `0.2.8` and this is the only image actively
 being updated. There are tags for older versions, but these may no longer be
 using the latest Alpine version and packages.
 
