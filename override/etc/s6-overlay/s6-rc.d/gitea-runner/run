@@ -1,4 +1,7 @@
 #!/command/with-contenv /bin/bash
+# SPDX-FileCopyrightText: 2023 - 2024 Daniel Wolf <nephatrine@gmail.com>
+#
+# SPDX-License-Identifier: ISC
 
 export HOME=/mnt/config/home
 export DOCKER_HOST=${DOCKER_HOST:-"unix:///var/run/docker.sock"}
