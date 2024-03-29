@@ -18,7 +18,8 @@ FROM code.nephatrine.net/nephnet/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 # hadolint ignore=DL3018
-RUN apk add --no-cache curl docker git git-lfs jq npm
+RUN apk add --no-cache curl docker git git-lfs jq npm \
+ && rm -rf /tmp/* /var/tmp/*
 
 COPY --from=builder /root/act_runner/act_runner /usr/bin/
 COPY override /
