@@ -6,15 +6,17 @@ FROM code.nephatrine.net/nephnet/nxb-alpine:latest-golang AS builder
 
 ARG ACT_RUNNER_VERSION=v0.2.8
 RUN git -C /root clone -b "$ACT_RUNNER_VERSION" --single-branch --depth=1 https://gitea.com/gitea/act_runner.git
+WORKDIR /root/act_runner
 
 ARG TAGS="sqlite sqlite_unlock_notify cgo"
 RUN echo "====== COMPILE ACT_RUNNER ======" \
- && cd /root/act_runner \
  && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) build
 
+# hadolint ignore=DL3007
 FROM code.nephatrine.net/nephnet/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
+# hadolint ignore=DL3018
 RUN echo "====== INSTALL PACKAGES ======" \
  && apk add --no-cache curl docker git git-lfs jq npm
 
