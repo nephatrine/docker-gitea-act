@@ -343,14 +343,14 @@ jobs:
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Manifest
         run: |
-          docker manifest create code.nephatrine.net/nephnet/gitea-runner:latest --amend code.nephatrine.net/nephnet/amd64:gitea-runner --amend code.nephatrine.net/nephnet/i386:gitea-runner --amend code.nephatrine.net/nephnet/arm64:gitea-runner --amend code.nephatrine.net/nephnet/armv7:gitea-runner --amend code.nephatrine.net/nephnet/riscv64:gitea-runner
           docker manifest create code.nephatrine.net/nephnet/gitea-runner:0.2.8 --amend code.nephatrine.net/nephnet/amd64:gitea-runner --amend code.nephatrine.net/nephnet/i386:gitea-runner --amend code.nephatrine.net/nephnet/arm64:gitea-runner --amend code.nephatrine.net/nephnet/armv7:gitea-runner --amend code.nephatrine.net/nephnet/riscv64:gitea-runner
           docker manifest create code.nephatrine.net/nephnet/gitea-runner:0.2 --amend code.nephatrine.net/nephnet/amd64:gitea-runner --amend code.nephatrine.net/nephnet/i386:gitea-runner --amend code.nephatrine.net/nephnet/arm64:gitea-runner --amend code.nephatrine.net/nephnet/armv7:gitea-runner --amend code.nephatrine.net/nephnet/riscv64:gitea-runner
           docker manifest create code.nephatrine.net/nephnet/gitea-runner:0 --amend code.nephatrine.net/nephnet/amd64:gitea-runner --amend code.nephatrine.net/nephnet/i386:gitea-runner --amend code.nephatrine.net/nephnet/arm64:gitea-runner --amend code.nephatrine.net/nephnet/armv7:gitea-runner --amend code.nephatrine.net/nephnet/riscv64:gitea-runner
-          docker manifest push --purge code.nephatrine.net/nephnet/gitea-runner:latest
+          docker manifest create code.nephatrine.net/nephnet/gitea-runner:latest --amend code.nephatrine.net/nephnet/amd64:gitea-runner --amend code.nephatrine.net/nephnet/i386:gitea-runner --amend code.nephatrine.net/nephnet/arm64:gitea-runner --amend code.nephatrine.net/nephnet/armv7:gitea-runner --amend code.nephatrine.net/nephnet/riscv64:gitea-runner
           docker manifest push --purge code.nephatrine.net/nephnet/gitea-runner:0.2.8
           docker manifest push --purge code.nephatrine.net/nephnet/gitea-runner:0.2
           docker manifest push --purge code.nephatrine.net/nephnet/gitea-runner:0
+          docker manifest push --purge code.nephatrine.net/nephnet/gitea-runner:latest
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -369,14 +369,14 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
         run: |
-          docker manifest create nephatrine/gitea-runner:latest --amend nephatrine/amd64:gitea-runner --amend nephatrine/ia32:gitea-runner --amend nephatrine/arm64:gitea-runner --amend nephatrine/armv7:gitea-runner --amend nephatrine/riscv64:gitea-runner
           docker manifest create nephatrine/gitea-runner:0.2.8 --amend nephatrine/amd64:gitea-runner --amend nephatrine/ia32:gitea-runner --amend nephatrine/arm64:gitea-runner --amend nephatrine/armv7:gitea-runner --amend nephatrine/riscv64:gitea-runner
           docker manifest create nephatrine/gitea-runner:0.2 --amend nephatrine/amd64:gitea-runner --amend nephatrine/ia32:gitea-runner --amend nephatrine/arm64:gitea-runner --amend nephatrine/armv7:gitea-runner --amend nephatrine/riscv64:gitea-runner
           docker manifest create nephatrine/gitea-runner:0 --amend nephatrine/amd64:gitea-runner --amend nephatrine/ia32:gitea-runner --amend nephatrine/arm64:gitea-runner --amend nephatrine/armv7:gitea-runner --amend nephatrine/riscv64:gitea-runner
-          docker manifest push --purge nephatrine/gitea-runner:latest
+          docker manifest create nephatrine/gitea-runner:latest --amend nephatrine/amd64:gitea-runner --amend nephatrine/ia32:gitea-runner --amend nephatrine/arm64:gitea-runner --amend nephatrine/armv7:gitea-runner --amend nephatrine/riscv64:gitea-runner
           docker manifest push --purge nephatrine/gitea-runner:0.2.8
           docker manifest push --purge nephatrine/gitea-runner:0.2
           docker manifest push --purge nephatrine/gitea-runner:0
+          docker manifest push --purge nephatrine/gitea-runner:latest
       - name: Notify Discord
         if: gitea.event_name != 'schedule'
         uses: https://github.com/sarisia/actions-status-discord@v1
