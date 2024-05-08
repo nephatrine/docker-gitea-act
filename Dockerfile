@@ -4,7 +4,7 @@
 
 FROM code.nephatrine.net/nephnet/nxb-alpine:latest-golang AS builder
 
-ARG ACT_RUNNER_VERSION=v0.2.8
+ARG ACT_RUNNER_VERSION=v0.2.10
 RUN git -C /root clone -b "$ACT_RUNNER_VERSION" --single-branch --depth=1 https://gitea.com/gitea/act_runner.git
 WORKDIR /root/act_runner
 
