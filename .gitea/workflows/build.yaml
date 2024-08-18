@@ -318,6 +318,10 @@ jobs:
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Manifest
         run: |
+          docker manifest rm code.nephatrine.net/nephnet/gitea-runner:0.2.10 || true
+          docker manifest rm code.nephatrine.net/nephnet/gitea-runner:0.2 || true
+          docker manifest rm code.nephatrine.net/nephnet/gitea-runner:0 || true
+          docker manifest rm code.nephatrine.net/nephnet/gitea-runner:latest || true
           docker manifest create code.nephatrine.net/nephnet/gitea-runner:0.2.10 --amend code.nephatrine.net/nephnet/amd64:gitea-runner --amend code.nephatrine.net/nephnet/i386:gitea-runner --amend code.nephatrine.net/nephnet/arm64:gitea-runner --amend code.nephatrine.net/nephnet/armv7:gitea-runner --amend code.nephatrine.net/nephnet/riscv64:gitea-runner
           docker manifest create code.nephatrine.net/nephnet/gitea-runner:0.2 --amend code.nephatrine.net/nephnet/amd64:gitea-runner --amend code.nephatrine.net/nephnet/i386:gitea-runner --amend code.nephatrine.net/nephnet/arm64:gitea-runner --amend code.nephatrine.net/nephnet/armv7:gitea-runner --amend code.nephatrine.net/nephnet/riscv64:gitea-runner
           docker manifest create code.nephatrine.net/nephnet/gitea-runner:0 --amend code.nephatrine.net/nephnet/amd64:gitea-runner --amend code.nephatrine.net/nephnet/i386:gitea-runner --amend code.nephatrine.net/nephnet/arm64:gitea-runner --amend code.nephatrine.net/nephnet/armv7:gitea-runner --amend code.nephatrine.net/nephnet/riscv64:gitea-runner
@@ -344,6 +348,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
         run: |
+          docker manifest rm nephatrine/gitea-runner:0.2.10 || true
+          docker manifest rm nephatrine/gitea-runner:0.2 || true
+          docker manifest rm nephatrine/gitea-runner:0 || true
+          docker manifest rm nephatrine/gitea-runner:latest || true
           docker manifest create nephatrine/gitea-runner:0.2.10 --amend nephatrine/amd64:gitea-runner --amend nephatrine/ia32:gitea-runner --amend nephatrine/arm64:gitea-runner --amend nephatrine/armv7:gitea-runner --amend nephatrine/riscv64:gitea-runner
           docker manifest create nephatrine/gitea-runner:0.2 --amend nephatrine/amd64:gitea-runner --amend nephatrine/ia32:gitea-runner --amend nephatrine/arm64:gitea-runner --amend nephatrine/armv7:gitea-runner --amend nephatrine/riscv64:gitea-runner
           docker manifest create nephatrine/gitea-runner:0 --amend nephatrine/amd64:gitea-runner --amend nephatrine/ia32:gitea-runner --amend nephatrine/arm64:gitea-runner --amend nephatrine/armv7:gitea-runner --amend nephatrine/riscv64:gitea-runner
