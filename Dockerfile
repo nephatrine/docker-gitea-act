@@ -1,10 +1,10 @@
-# SPDX-FileCopyrightText: 2023 - 2024 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2023 - 2025 Daniel Wolf <nephatrine@gmail.com>
 #
 # SPDX-License-Identifier: ISC
 
 FROM code.nephatrine.net/nephnet/nxb-alpine:golang AS builder
 
-ARG ACT_RUNNER_VERSION=v0.2.10
+ARG ACT_RUNNER_VERSION=v0.2.11
 RUN git -C /root clone -b "$ACT_RUNNER_VERSION" --single-branch --depth=1 https://gitea.com/gitea/act_runner.git
 WORKDIR /root/act_runner
 
