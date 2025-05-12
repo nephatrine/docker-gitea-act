@@ -1,19 +1,17 @@
-# SPDX-FileCopyrightText: 2023 Daniel Wolf <nephatrine@gmail.com>
-#
-# SPDX-License-Identifier: ISC
+# SPDX-FileCopyrightText: 2023-2025 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-License-Identifier: CC0-1.0
 
 services:
-  act_runner:
+  gitea-runner:
     build: .
-    container_name: act_runner
+    container_name: gitea-runner
     environment:
       TZ: America/New_York
       PUID: 1000
       PGID: 1000
-      GITEA_INSTANCE_URL: http://example.net:3000/
+      GITEA_INSTANCE_URL: https://gitea.example.net
       GITEA_RUNNER_REGISTRATION_TOKEN:
-      GITEA_RUNNER_NAME: testrunner
-      GITEA_RUNNER_LABELS: alpine:docker://nephatrine/nxbuilder:alpine,debian:docker://nephatrine/nxbuilder:debian
+      GITEA_RUNNER_NAME: test
     volumes:
-      - /mnt/containers/act_runner:/mnt/config
+      - /mnt/containers/gitea-runner:/mnt/config
       - /var/run/docker.sock:/run/docker.sock

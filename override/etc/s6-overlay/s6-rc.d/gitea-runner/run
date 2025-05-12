@@ -1,16 +1,15 @@
 #!/command/with-contenv /bin/bash
-# SPDX-FileCopyrightText: 2023 - 2024 Daniel Wolf <nephatrine@gmail.com>
-#
+# SPDX-FileCopyrightText: 2023-2025 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
+
+# shellcheck shell=bash
 
 export HOME=/mnt/config/home
 export DOCKER_HOST=${DOCKER_HOST:-"unix:///var/run/docker.sock"}
 export GITEA_RUNNER_NAME=${GITEA_RUNNER_NAME:-"$(hostname)"}
-export REQSETTINGS="${GITEA_INSTANCE_URL};${GITEA_RUNNER_REGISTRATION_TOKEN};${GITEA_RUNNER_NAME};${GITEA_RUNNER_LABELS}"
+export REQSETTINGS="${GITEA_INSTANCE_URL};${GITEA_RUNNER_REGISTRATION_TOKEN};${GITEA_RUNNER_NAME}"
 
 cd /mnt/config/home || exit 1
-
-# Create Config File
 
 if [[ ! -d /mnt/config/etc ]]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc
@@ -21,8 +20,6 @@ fi
 if [[ ! -f /mnt/config/etc/gitea-runner.yaml && -f /mnt/config/etc/gitea-runner.yaml.default ]]; then
   /command/s6-setuidgid guardian /bin/cp /mnt/config/etc/gitea-runner.yaml.default /mnt/config/etc/gitea-runner.yaml
 fi
-
-# Register Runner
 
 if [[ ! -d /mnt/config/log/gitea-runner ]]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log/gitea-runner
@@ -46,8 +43,6 @@ if [[ ! -f /mnt/config/log/gitea-runner/configured ]]; then
     fi
   fi
 fi
-
-# Start Runner
 
 if [[ -f /mnt/config/log/gitea-runner/configured ]]; then
   exec /usr/bin/act_runner daemon --config "/mnt/config/etc/gitea-runner.yaml"
