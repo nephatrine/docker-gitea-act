@@ -15,8 +15,7 @@ RUN make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) build
 FROM code.nephatrine.net/nephnet/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-RUN apk add --no-cache docker git git-lfs jq npm \
- && rm -rf /tmp/* /var/tmp/*
+RUN apk add --no-cache docker git git-lfs jq npm && rm -rf /tmp/* /var/tmp/*
 
 COPY --from=builder /root/act_runner/act_runner /usr/bin/
 COPY override /

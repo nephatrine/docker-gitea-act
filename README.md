@@ -36,8 +36,8 @@ potentially customize.
 
 - `/mnt/config/etc/gitea-runner.yaml`
 
-Modifications to this file will require a service restart to pull in the
-changes made.
+Modifications to this file will require a service restart to pull in the changes
+made.
 
 ### Container Variables
 
